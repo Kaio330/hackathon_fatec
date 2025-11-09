@@ -87,6 +87,8 @@
         <option value="Em Andamento">Em Andamento</option>
         <option value="Resolvido">Resolvido</option>
       </select>
+      <label for="anexo" style="text-align: left; margin-top: 1rem;">Anexar Imagem (Opcional)</label>
+      <input type="file" id="anexo" accept="image/*">
       <input type="text" id="criador" placeholder="Criado por (ex: João Silva)">
       <div class="modal-buttons">
         <button class="cancel" id="cancelar">Cancelar</button>
@@ -137,19 +139,39 @@
       const prioridade = document.getElementById('prioridade').value;
       const status = document.getElementById('status').value;
       const criador = document.getElementById('criador').value;
+      const anexoInput = document.getElementById('anexo');
+      const anexoFile = anexoInput.files[0];
 
       if (!titulo) return alert('Informe o título do chamado!');
 
-      if (editIndex !== null) {
-        chamados[editIndex] = { ...chamados[editIndex], titulo, descricao, local, categoria, prioridade, status, criador };
-      } else {
-        const data = new Date().toLocaleString();
-        chamados.push({ titulo, descricao, local, categoria, prioridade, status, criador, data });
-      }
+      const salvarChamadoNoSistema = (anexoBase64 = null) => {
+        const chamado = {
+          titulo, descricao, local, categoria, prioridade, status, criador,
+          anexo: anexoBase64,
+          data: new Date().toLocaleString()
+        };
 
-      salvarChamados();
-      modal.style.display = 'none';
-      atualizarChamados();
+        if (editIndex !== null) {
+          chamados[editIndex] = { ...chamados[editIndex], ...chamado };
+        } else {
+          chamados.push(chamado);
+        }
+
+        salvarChamados();
+        modal.style.display = 'none';
+        atualizarChamados();
+        anexoInput.value = ''; // Limpa o campo de anexo
+      };
+
+      if (anexoFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          salvarChamadoNoSistema(e.target.result);
+        };
+        reader.readAsDataURL(anexoFile);
+      } else {
+        salvarChamadoNoSistema(editIndex !== null ? chamados[editIndex].anexo : null);
+      }
     };
 
     function editarChamado(index) {
@@ -194,6 +216,8 @@
         filtrados.forEach((c, index) => {
           const div = document.createElement("div");
           div.className = "chamado";
+          const anexoHtml = c.anexo ? `<img src="${c.anexo}" alt="Anexo" class="chamado-anexo">` : '';
+
           div.innerHTML = `
             <div class="chamado-header">
               <span><strong>#${index + 1}</strong></span>
@@ -201,6 +225,7 @@
             </div>
             <strong>${c.titulo}</strong>
             <p class="descricao">${c.descricao || "—"}</p>
+            ${anexoHtml}
             <div class="detalhes">
               <span>📍 ${c.local || "Local não informado"}</span>
               <span>⚙️ ${c.categoria}</span>

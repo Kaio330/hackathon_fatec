@@ -286,6 +286,14 @@ header p {
   margin: 0.5rem 0 1rem;
 }
 
+.chamado-anexo {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #eee;
+}
+
 .detalhes {
   display: flex;
   gap: 1.5rem;
@@ -349,6 +357,13 @@ header p {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 5px rgba(106, 90, 205, 0.3);
+}
+
+.modal-content input[type="file"] {
+  border: 1px solid #ddd;
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-family: var(--font-family);
 }
 
 .modal-content textarea {

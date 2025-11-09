@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="style.css">
   <title>Sistema de Chamados - Infraestrutura</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 </head>
 <body class="main-page">
 
@@ -21,10 +22,34 @@
   </header>
 
   <section class="cards">
-    <div class="card"><p>Total</p><strong id="total">0</strong></div>
-    <div class="card"><p>Abertos</p><strong id="abertos">0</strong></div>
-    <div class="card"><p>Em Andamento</p><strong id="andamento">0</strong></div>
-    <div class="card"><p>Resolvidos</p><strong id="resolvidos">0</strong></div>
+    <div class="card">
+      <div class="card-info">
+        <p>Total de Chamados</p>
+        <strong id="total">0</strong>
+      </div>
+      <div class="card-icon total-icon"><i data-feather="file-text"></i></div>
+    </div>
+    <div class="card">
+      <div class="card-info">
+        <p>Abertos</p>
+        <strong id="abertos">0</strong>
+      </div>
+      <div class="card-icon abertos-icon"><i data-feather="alert-circle"></i></div>
+    </div>
+    <div class="card">
+      <div class="card-info">
+        <p>Em Andamento</p>
+        <strong id="andamento">0</strong>
+      </div>
+      <div class="card-icon andamento-icon"><i data-feather="clock"></i></div>
+    </div>
+    <div class="card">
+      <div class="card-info">
+        <p>Resolvidos</p>
+        <strong id="resolvidos">0</strong>
+      </div>
+      <div class="card-icon resolvidos-icon"><i data-feather="check-circle"></i></div>
+    </div>
   </section>
 
   <button class="btn" id="novoChamadoBtn">+ Abrir Novo Chamado</button>
@@ -87,6 +112,8 @@
         <option value="Em Andamento">Em Andamento</option>
         <option value="Resolvido">Resolvido</option>
       </select>
+      <label for="anexo" style="text-align: left; margin-top: 1rem;">Anexar Imagem (Opcional)</label>
+      <input type="file" id="anexo" accept="image/*">
       <input type="text" id="criador" placeholder="Criado por (ex: João Silva)">
       <div class="modal-buttons">
         <button class="cancel" id="cancelar">Cancelar</button>
@@ -135,27 +162,71 @@
       // ... limpar outros campos
     }
 
-    // --- 3. Adicionar os "Ouvintes" de Eventos (O QUE FALTAVA) ---
-    
-    // Quando o botão "+ Abrir Novo Chamado" for clicado, chame a função abrirModal
-    novoChamadoBtn.addEventListener('click', abrirModal);
+    document.getElementById('novoChamadoBtn').onclick = () => {
+      modal.style.display = 'flex';
+      modalTitulo.textContent = "Novo Chamado";
+      editIndex = null;
+      document.querySelectorAll('#modal input, #modal textarea, #modal select').forEach(e => e.value = '');
+    };
+    document.getElementById('cancelar').onclick = () => modal.style.display = 'none';
+    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
 
-    // Quando o botão "Cancelar" for clicado, chame a função fecharModal
-    cancelarBtn.addEventListener('click', fecharModal);
+    salvarBtn.onclick = () => {
+      const titulo = document.getElementById('titulo').value;
+      const descricao = document.getElementById('descricao').value;
+      const local = document.getElementById('local').value;
+      const categoria = document.getElementById('categoria').value;
+      const prioridade = document.getElementById('prioridade').value;
+      const status = document.getElementById('status').value;
+      const criador = document.getElementById('criador').value;
+      const anexoInput = document.getElementById('anexo');
+      const anexoFile = anexoInput.files[0];
 
-    // Quando o botão "Salvar" for clicado...
-    salvarBtn.addEventListener('click', () => {
-      // (Aqui vai a sua lógica para salvar o chamado, por exemplo, no localStorage)
-      
-      // Simplesmente para teste:
-      console.log("Título:", tituloInput.value);
-      console.log("Descrição:", descricaoInput.value);
-      alert("Chamado salvo! (Veja o console para detalhes)"); 
-      
-      fecharModal(); // Fecha o modal depois de salvar
-      carregarChamados(); // Atualiza a lista
-    });
+      if (!titulo) return alert('Informe o título do chamado!');
 
+      const salvarChamadoNoSistema = (anexoBase64 = null) => {
+        const chamado = {
+          titulo, descricao, local, categoria, prioridade, status, criador,
+          anexo: anexoBase64,
+          data: new Date().toLocaleString()
+        };
+
+        if (editIndex !== null) {
+          chamados[editIndex] = { ...chamados[editIndex], ...chamado };
+        } else {
+          chamados.push(chamado);
+        }
+
+        salvarChamados();
+        modal.style.display = 'none';
+        atualizarChamados();
+        anexoInput.value = ''; // Limpa o campo de anexo
+      };
+
+      if (anexoFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          salvarChamadoNoSistema(e.target.result);
+        };
+        reader.readAsDataURL(anexoFile);
+      } else {
+        salvarChamadoNoSistema(editIndex !== null ? chamados[editIndex].anexo : null);
+      }
+    };
+
+    function editarChamado(index) {
+      const c = chamados[index];
+      document.getElementById('titulo').value = c.titulo;
+      document.getElementById('descricao').value = c.descricao;
+      document.getElementById('local').value = c.local;
+      document.getElementById('categoria').value = c.categoria;
+      document.getElementById('prioridade').value = c.prioridade;
+      document.getElementById('status').value = c.status;
+      document.getElementById('criador').value = c.criador;
+      modalTitulo.textContent = "Editar Chamado";
+      modal.style.display = 'flex';
+      editIndex = index;
+    }
 
     // --- 4. Funções Principais do App ---
 

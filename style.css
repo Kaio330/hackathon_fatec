@@ -176,7 +176,53 @@ header p {
   padding: 1.5rem;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-info p {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.card-info strong {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.card-icon {
+  padding: 0.8rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.total-icon {
+  background-color: #eaf2ff;
+  color: #4a90e2;
+}
+
+.abertos-icon {
+  background-color: #ffeaea;
+  color: #e74c3c;
+}
+
+.andamento-icon {
+  background-color: #fff8e1;
+  color: #f1c40f;
+}
+
+.resolvidos-icon {
+  background-color: #eafcfb;
+  color: #2ecc71;
 }
 
 .card p {
@@ -278,20 +324,55 @@ header p {
 .Resolvido { background: var(--success); }
 
 .chamado strong {
-  font-size: 1.2rem;
+  font-size: 1.1rem; /* Slightly smaller for mobile */
   font-weight: 600;
+  word-wrap: break-word; /* Prevent long titles from breaking layout */
 }
 
 .chamado .descricao {
   color: #666;
   margin: 0.5rem 0 1rem;
+  word-wrap: break-word;
+}
+
+.chamado-anexo {
+  max-width: 80px; /* Start with a small size for mobile */
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.chamado-anexo:hover {
+  transform: scale(1.1);
+}
+
+/* On larger screens, we can allow the image to be a bit bigger */
+@media (min-width: 768px) {
+  .chamado-anexo {
+    max-width: 150px;
+  }
 }
 
 .detalhes {
   display: flex;
-  gap: 1.5rem;
-  font-size: 0.9rem;
+  flex-wrap: wrap; /* Allow details to wrap on small screens */
+  gap: 1rem; /* Slightly smaller gap for mobile */
+  font-size: 0.85rem; /* Adjust font size for mobile */
   color: #777;
+}
+
+@media (min-width: 768px) {
+  .chamado strong {
+    font-size: 1.2rem; /* Restore original size on larger screens */
+  }
+
+  .detalhes {
+    gap: 1.5rem; /* Restore original gap */
+    font-size: 0.9rem; /* Restore original font size */
+  }
 }
 
 .acoes button {
@@ -350,6 +431,13 @@ header p {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 5px rgba(106, 90, 205, 0.3);
+}
+
+.modal-content input[type="file"] {
+  border: 1px solid #ddd;
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-family: var(--font-family);
 }
 
 .modal-content textarea {

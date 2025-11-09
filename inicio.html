@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Chamados - Infraestrutura</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 </head>
 <body class="main-page">
 
@@ -20,10 +21,34 @@
   </header>
 
   <section class="cards">
-    <div class="card"><p>Total</p><strong id="total">0</strong></div>
-    <div class="card"><p>Abertos</p><strong id="abertos">0</strong></div>
-    <div class="card"><p>Em Andamento</p><strong id="andamento">0</strong></div>
-    <div class="card"><p>Resolvidos</p><strong id="resolvidos">0</strong></div>
+    <div class="card">
+      <div class="card-info">
+        <p>Total de Chamados</p>
+        <strong id="total">0</strong>
+      </div>
+      <div class="card-icon total-icon"><i data-feather="file-text"></i></div>
+    </div>
+    <div class="card">
+      <div class="card-info">
+        <p>Abertos</p>
+        <strong id="abertos">0</strong>
+      </div>
+      <div class="card-icon abertos-icon"><i data-feather="alert-circle"></i></div>
+    </div>
+    <div class="card">
+      <div class="card-info">
+        <p>Em Andamento</p>
+        <strong id="andamento">0</strong>
+      </div>
+      <div class="card-icon andamento-icon"><i data-feather="clock"></i></div>
+    </div>
+    <div class="card">
+      <div class="card-info">
+        <p>Resolvidos</p>
+        <strong id="resolvidos">0</strong>
+      </div>
+      <div class="card-icon resolvidos-icon"><i data-feather="check-circle"></i></div>
+    </div>
   </section>
 
   <button class="btn" id="novoChamadoBtn">+ Abrir Novo Chamado</button>
@@ -257,6 +282,8 @@
     });
 
     carregarChamados();
+
+    feather.replace();
   </script>
 </body>
 </html>
